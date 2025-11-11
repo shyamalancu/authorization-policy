@@ -13,14 +13,14 @@ default allow := false
 # 	input.user.key == "test@permit.io"
 # }
 # Also, you can add more allow blocks here to get an OR effect
-# allow if {
-# 	# i.e if you add my_custom_rule here - the policy will allow
-# 	# if my_custom_rule is true, EVEN IF policies.allow is false.
-# 	not input.type == "market_order"
-# } else if {
-# 	input.type == "market_order"
-#     is_trade_user
-# }
+allow if {
+	# i.e if you add my_custom_rule here - the policy will allow
+	# if my_custom_rule is true, EVEN IF policies.allow is false.
+	not input.type == "market_order"
+} else if {
+	input.type == "market_order"
+    is_trade_user
+}
 
 # trade_access is true if...
 is_trade_user if {
@@ -28,5 +28,5 @@ is_trade_user if {
 	some i
 
 	# "Trade" is the `i`-th element in the user->role mappings for the identified user.
-	data.users[input.user].roles[i] == "Contract"
+	data.users[input.user].roles[i] == "Trade"
 }
