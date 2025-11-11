@@ -28,5 +28,5 @@ is_trade_user if {
 	some i
 
 	# "Trade" is the `i`-th element in the user->role mappings for the identified user.
-	data.users[input.user.key].roles[i] == "Contract"
+	data.users[input.user.key].roles[i] == "Trade"
 }
