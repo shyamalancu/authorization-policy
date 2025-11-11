@@ -8,15 +8,16 @@ default allow := false
 
 allow {
 	policies.allow
+	custom.allow
 }
 
 # NOTE: you can add more conditions here to get an AND effect
 # i.e: assume you added my_custom_rule here
 # The policy will allow if BOTH policies.allow and my_custom_rule are true
 
-allow {
-	custom.allow
-}
+# allow {
+# 	custom.allow
+# }
 
 allowing_sources := policies.__allow_sources
 
