@@ -20,7 +20,7 @@ allow if {
 	not input.resource.type == "market_order"
 } else if {
 	input.resource.type == "market_order"
-    is_trade_user
+    # is_trade_user
 }
 
 # is_trade_user is true if....
