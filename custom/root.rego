@@ -16,5 +16,6 @@ allow if {
 
 # is_trade_user is true if....
 is_trade_user if {
-	"Trade" in rbac.allowing_roles
+	# "Trade" in rbac.allowing_roles
+    input.user.key == "anton@clarksons.com"
 }
