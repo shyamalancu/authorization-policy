@@ -2,7 +2,9 @@ package permit.custom
 
 import rego.v1
 
+import future.keywords.in
 import data.permit.policies
+import data.permit.rbac
 
 default allow := false
 
@@ -22,12 +24,7 @@ allow if {
     is_trade_user
 }
 
-# trade_access is true if...
+# is_trade_user is true if...
 is_trade_user if {
-	# for some `i`...
-	some i
-
-	# "Trade" is the `i`-th element in the user->role mappings for the identified user.
-	# data.users[input.user.key].roles[i] == "Trade"
-    i == 1
+	"Trade" in rbac.allowing_roles
 }
