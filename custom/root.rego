@@ -2,7 +2,6 @@ package permit.custom
 
 import rego.v1
 
-import future.keywords.in
 import data.permit.policies
 import data.permit.rbac
 
