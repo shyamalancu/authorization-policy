@@ -4,8 +4,8 @@ import future.keywords.in
 
 import data.permit.generated.abac.utils.attributes
 
-default userset_Test_5fUsers = false
+default userset_Trade_5fuser = false
 
-userset_Test_5fUsers {
-	contains(attributes.user.email, "test")
+userset_Trade_5fuser {
+	"Trade" in attributes.user.roles
 }
