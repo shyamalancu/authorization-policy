@@ -7,6 +7,6 @@ import data.permit.generated.abac.utils.attributes
 default resourceset_Company_5fdistributed_5fMO = false
 
 resourceset_Company_5fdistributed_5fMO {
-	attributes.user.attributes in attributes.resource.DistributedCompanies
+	attributes.user.company in attributes.resource.DistributedCompanies
 	attributes.resource.type == "market_order"
 }
