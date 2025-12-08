@@ -11,14 +11,19 @@ default allow := true
 default deny := false
 
 deny if {
-	print("Resource Type: ", input.resource.type, ", Resource Id: ", input.resource.key)
+	resource_key := sprintf("%p:%s", [input.resource.type, input.resource.key])
+	user_key := sprintf("user:%s", [input.user.key])
+
+	print("Resource : ", resource_key, ", User : ", user_key, ", Action : ", input.action)
 	input.resource.type == "market_order"
+
 	print(policies.__allow_sources)
+	count(policies.__allow_sources) == 1
 	"abac" in policies.__allow_sources
+	
 	print(abac.allowing_rules)
 	abac.allowing_rules[_].resourceset == "resourceset_Company_5fdistributed_5fMO"
-	"viewer" in data.role_assignments[concat("", ["user:", input.user.key])][concat("", [input.resource.type, ":", input.resource.key])]
-	# data.relationships[concat("", [input.resource.type, ":", input.resource.key])].viewer == [concat("", ["user:", input.user.key])]
+	"viewer" in data.role_assignments[user_key][resource_key]
 }
 
 # allow if {
