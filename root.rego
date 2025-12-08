@@ -8,7 +8,7 @@ default allow := false
 
 allow {
 	policies.allow
-	custom.allow
+	not custom.deny
 }
 
 # NOTE: you can add more conditions here to get an AND effect
