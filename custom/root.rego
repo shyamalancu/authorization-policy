@@ -11,7 +11,7 @@ default allow := true
 default deny := false
 
 deny if {
-	print(input.resource.type)
+	print("Resource Type: %a, Resource Id: %b", input.resource.type, input.resource.id)
 	input.resource.type == "market_order"
 	print(policies.__allow_sources)
 	"abac" in policies.__allow_sources
