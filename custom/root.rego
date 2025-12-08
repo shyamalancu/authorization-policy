@@ -12,8 +12,8 @@ default deny := false
 
 deny if {
 	input.resource.type == "market_order"
-	"abac" in policies.__allow_sources
-	abac.allowing_rules.resourceset == "Company_distributed_MO"
+	"abac" in policies.allow_sources
+	abac.allowing_rules[_].resourceset == "resourceset_Company_5fdistributed_5fMO"
 	data.relationships[concat("", ["market_order:", input.resource.id])].viewer == [concat("", ["user:", input.user])]
 }
 
