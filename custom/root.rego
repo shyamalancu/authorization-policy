@@ -11,7 +11,7 @@ default allow := true
 default deny := false
 
 deny if {
-	resource_key := sprintf("%p:%s", [input.resource.type, input.resource.key])
+	resource_key := sprintf("%s:%s", [input.resource.type, input.resource.key])
 	user_key := sprintf("user:%s", [input.user.key])
 
 	print("Resource : ", resource_key, ", User : ", user_key, ", Action : ", input.action)
@@ -20,7 +20,7 @@ deny if {
 	print(policies.__allow_sources)
 	count(policies.__allow_sources) == 1
 	"abac" in policies.__allow_sources
-	
+
 	print(abac.allowing_rules)
 	abac.allowing_rules[_].resourceset == "resourceset_Company_5fdistributed_5fMO"
 	"viewer" in data.role_assignments[user_key][resource_key]
