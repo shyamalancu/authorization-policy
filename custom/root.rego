@@ -17,7 +17,6 @@ deny if {
 	# print("Resource : ", resource_key, ", User : ", user_key, ", Action : ", input.action)
 	input.resource.type == "market_order"
 
-	# print(policies.__allow_sources)
 	count(policies.__allow_sources) == 1
 	"abac" in policies.__allow_sources
 
