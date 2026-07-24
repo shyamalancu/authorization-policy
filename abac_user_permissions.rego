@@ -98,6 +98,60 @@ add_prefix(instance_data, instance) = result {
     result := instance
 }
 
+# Optional input.resources filter — scope the response to a specific set of resource keys.
+# Mirrors __input_resources / is_filtered_resource handling in user_permissions.rego so that
+# ABAC results obey the same filter as RBAC/ReBAC results.
+__input_resources := object.get(input, "resources", null)
+
+non_tenant_resources_filter[inst] {
+    inst := __input_resources[_]
+    not startswith(inst, "__tenant")
+}
+
+default has_non_tenant_resource_filter := false
+has_non_tenant_resource_filter {
+    count(non_tenant_resources_filter) > 0
+}
+
+# Resource instances: match by fully-qualified "type:key" or by bare key, or pass through
+# when the filter contains no non-tenant entries (empty or tenant-only resources array).
+# This mirrors is_filtered_instance in user_permissions.rego.
+#
+# Tenants (instance_data == true): match ONLY by the fully-qualified "__tenant:key" form,
+# or pass through when the filter contains no non-tenant entries. This mirrors the
+# `__input_resources` (resources) branch of is_filtered_tenant in user_permissions.rego,
+# which matches a tenant by resource.fully_qualified_key ("__tenant:key") and NOT by its
+# bare key. Bare-key tenant matching in user_permissions.rego is reserved for the dedicated
+# `tenants` input field (_is_filtered_tenant), which this filter intentionally does not model.
+instance_passes_resource_filter(_, _, _) {
+    not is_array(__input_resources)
+}
+instance_passes_resource_filter(instance, instance_data, _) {
+    is_array(__input_resources)
+    instance_data == true
+    sprintf("__tenant:%s", [instance]) in __input_resources
+}
+instance_passes_resource_filter(_, instance_data, _) {
+    is_array(__input_resources)
+    instance_data == true
+    not has_non_tenant_resource_filter
+}
+instance_passes_resource_filter(instance, instance_data, _) {
+    is_array(__input_resources)
+    not instance_data == true
+    instance in __input_resources
+}
+instance_passes_resource_filter(_, instance_data, parts) {
+    is_array(__input_resources)
+    not instance_data == true
+    parts[1] in __input_resources
+}
+instance_passes_resource_filter(_, instance_data, _) {
+    is_array(__input_resources)
+    not instance_data == true
+    not has_non_tenant_resource_filter
+}
+
 
 # Iterate over data.role_assigments and return set of all tenants that user related to in the format { "tenant_key" : true}
 tenants_match_to_user_roles(user_key) = {tenant: true |
@@ -119,6 +173,7 @@ permissions[ps] {
 			resource_type := parts[0]
 
 			resource_instance_or_tenant_match_user(resource_type, allowed_type,instance_data )
+			instance_passes_resource_filter(instance, instance_data, parts)
 
 			_input := custom_input(instance, instance_data, user_key, parts, allowed_type)
       some value in abac.matching_users_and_resources_set with input as _input
